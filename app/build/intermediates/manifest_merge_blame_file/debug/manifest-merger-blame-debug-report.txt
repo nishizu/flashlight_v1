@@ -1,0 +1,89 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.flashlight"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+8-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="32" />
+9-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.CAMERA" />
+11-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:5:5-81
+11-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:5:22-62
+12
+13    <!-- get camera permission -->
+14    <application
+14-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:9:5-32:19
+15        android:allowBackup="true"
+15-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:10:13-39
+16        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+16-->[androidx.core:core:1.8.0] C:\Users\nishizu\.gradle\caches\transforms-3\3fbf8c62ae66f09ccb00d8a5012ebd44\transformed\core-1.8.0\AndroidManifest.xml:24:18-86
+17        android:dataExtractionRules="@xml/data_extraction_rules"
+17-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:11:13-69
+18        android:debuggable="true"
+19        android:extractNativeLibs="false"
+20        android:fullBackupContent="@xml/backup_rules"
+20-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:12:13-58
+21        android:icon="@mipmap/ic_launcher"
+21-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:13:13-47
+22        android:label="@string/app_name"
+22-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:14:13-45
+23        android:roundIcon="@mipmap/ic_launcher_round"
+23-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:15:13-58
+24        android:supportsRtl="true"
+24-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:16:13-39
+25        android:testOnly="true"
+26        android:theme="@style/Theme.FlashLight" >
+26-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:17:13-52
+27        <activity
+27-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:19:9-31:20
+28            android:name="com.example.flashlight.MainActivity"
+28-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:20:17-45
+29            android:exported="true" >
+29-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:21:17-40
+30            <intent-filter>
+30-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:22:13-26:29
+31                <action android:name="android.intent.action.MAIN" />
+31-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:23:17-68
+31-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:23:25-66
+32
+33                <category android:name="android.intent.category.LAUNCHER" />
+33-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:25:17-76
+33-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:25:27-74
+34            </intent-filter>
+35
+36            <meta-data
+36-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:28:13-30:39
+37                android:name="android.app.lib_name"
+37-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:29:21-56
+38                android:value="" />
+38-->C:\Users\nishizu\IdeaProjects\FlashLight\app\src\main\AndroidManifest.xml:30:21-37
+39        </activity>
+40
+41        <provider
+41-->[androidx.emoji2:emoji2:1.2.0] C:\Users\nishizu\.gradle\caches\transforms-3\953e408a8e326985c5b98e91d6479a80\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+42            android:name="androidx.startup.InitializationProvider"
+42-->[androidx.emoji2:emoji2:1.2.0] C:\Users\nishizu\.gradle\caches\transforms-3\953e408a8e326985c5b98e91d6479a80\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+43            android:authorities="com.example.flashlight.androidx-startup"
+43-->[androidx.emoji2:emoji2:1.2.0] C:\Users\nishizu\.gradle\caches\transforms-3\953e408a8e326985c5b98e91d6479a80\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+44            android:exported="false" >
+44-->[androidx.emoji2:emoji2:1.2.0] C:\Users\nishizu\.gradle\caches\transforms-3\953e408a8e326985c5b98e91d6479a80\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+45            <meta-data
+45-->[androidx.emoji2:emoji2:1.2.0] C:\Users\nishizu\.gradle\caches\transforms-3\953e408a8e326985c5b98e91d6479a80\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+46                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+46-->[androidx.emoji2:emoji2:1.2.0] C:\Users\nishizu\.gradle\caches\transforms-3\953e408a8e326985c5b98e91d6479a80\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+47                android:value="androidx.startup" />
+47-->[androidx.emoji2:emoji2:1.2.0] C:\Users\nishizu\.gradle\caches\transforms-3\953e408a8e326985c5b98e91d6479a80\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+48            <meta-data
+48-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\nishizu\.gradle\caches\transforms-3\1383200be034d4932da1d54afe9c07dd\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
+49                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+49-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\nishizu\.gradle\caches\transforms-3\1383200be034d4932da1d54afe9c07dd\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
+50                android:value="androidx.startup" />
+50-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\nishizu\.gradle\caches\transforms-3\1383200be034d4932da1d54afe9c07dd\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
+51        </provider>
+52    </application>
+53
+54</manifest>
