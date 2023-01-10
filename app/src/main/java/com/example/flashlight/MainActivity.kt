@@ -14,6 +14,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     //aggiunta
+
     var flashLightStatus: Boolean = false
     var a: Boolean = false
 
@@ -68,21 +69,39 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onSeekBarChanged(){
-        stopTimer()
+        //if on change light on - keep it
         if(isFlashLightOn){
+           stopTimer()
+       }
+        //if on change light off and timer is active (blinking phase) - make light fixed on and stop timer
+        if (!isFlashLightOn && isTimerRunning) {
             switchFlashLight()
+            stopTimer()
         }
-        startTimer()
+        //if seekbar value not min - if light on - turn off and start blink
+        val repetitionValue = (seekBar.progress.toLong() + 1 ) * 1000
+        if (repetitionValue > 1000) {
+            if(isFlashLightOn){
+                 switchFlashLight()
+                startTimer()
+            }
+        }
     }
 
     fun onFlashLightClicked() {
         Log.i("flashLight", "FlashLight clicked")
 
+        //if light off and timer running pre-invert light status (trick)
+        if (!isFlashLightOn && isTimerRunning) {
+            isFlashLightOn = !isFlashLightOn
+        }
         // First invert the state of the flashLight
         switchFlashLight()
 
+        val repetitionValue = (seekBar.progress.toLong() + 1 ) * 1000
+
         // Then start (or stop) the timer
-        if (isFlashLightOn){
+        if (isFlashLightOn && repetitionValue > 1000){
             startTimer()
         } else {
             stopTimer()
@@ -97,6 +116,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun switchFlashLight(){
+
+        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val cameraId = cameraManager.cameraIdList[0]
+
         isFlashLightOn = !isFlashLightOn
         Log.i("flashLight", "Light is $isFlashLightOn")
         // After inverting the value, we then execute our logic
@@ -108,12 +131,12 @@ class MainActivity : AppCompatActivity() {
         if(isFlashLightOn){
             Log.i("flashLight", "SHOW power ON")
             onOffButton.setImageResource(R.drawable.power_on)
-            // cameraManager.setTorchMode(cameraId, true)
+            cameraManager.setTorchMode(cameraId, true)
         }
         else{
             Log.i("flashLight", "SHOW power off")
             onOffButton.setImageResource(R.drawable.power_off)
-            // cameraManager.setTorchMode(cameraId, false)
+            cameraManager.setTorchMode(cameraId, false)
         }
     }
 
@@ -128,11 +151,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.i("flashLight", "timer now true")
-        isTimerRunning = true;
+        isTimerRunning = true
 
         // Repetition value here so it's exposed, we can change it print it etc
         // We add +1 to account for the seekbar starting to count from 0 and then transform in milliseconds
-        var repetitionValue = (seekBar.progress.toLong() + 1 ) * 1000
+
+        val repetitionValue = (seekBar.progress.toLong() + 1 ) * 300
         Log.i("flashLight", "repetition value is $repetitionValue")
 
         timerHandle.scheduleAtFixedRate(object : TimerTask() {
@@ -158,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         if(isTimerRunning){
             // Cancel and reset the handle + set bool to false
             timerHandle.cancel()
-            isTimerRunning = false;
+            isTimerRunning = false
             timerHandle = Timer()
             counter = 0
         }
