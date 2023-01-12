@@ -1,6 +1,5 @@
 package com.example.flashlight
 
-//aggiunta
 import android.content.Context
 import android.hardware.camera2.CameraManager
 import android.os.Bundle
@@ -13,13 +12,10 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    //aggiunta
-
-    var flashLightStatus: Boolean = false
-    var a: Boolean = false
-
     // REGION New Variables
 
+    // Status of the button
+    var isButtonActive: Boolean = false
     // Status of the flashlight
     var isFlashLightOn: Boolean = false
     // handler for the timer
@@ -30,15 +26,11 @@ class MainActivity : AppCompatActivity() {
     lateinit var onOffButton : ImageButton
     // bool for the timer
     var isTimerRunning : Boolean = false
-    // counter to stop blink after x repetitions (for debug)
-    var counter : Int = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //aggiunta
-        //openFlashLight()
 
         // new init method to initialise public handles and onClicks
         initFlashLight()
@@ -46,9 +38,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun initFlashLight(){
         // Setup the handles
-        onOffButton = findViewById<ImageButton>(R.id.on_off_button)
-        seekBar = findViewById<SeekBar>(R.id.seekBar)
+        onOffButton = findViewById(R.id.on_off_button)
+        seekBar = findViewById(R.id.seekBar)
         // Setup the onCLick listeners
+
         onOffButton.setOnClickListener {
             onFlashLightClicked()
         }
@@ -57,86 +50,83 @@ class MainActivity : AppCompatActivity() {
                 // here, you react to the value being set in seekBar
                 onSeekBarChanged()
             }
-
             override fun onStartTrackingTouch(seekBar: SeekBar) {
                 // you can probably leave this empty
             }
-
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 // you can probably leave this empty
             }
         })
+
     }
 
     fun onSeekBarChanged(){
-        //if on change light on - keep it
-        if(isFlashLightOn){
-           stopTimer()
-       }
-        //if on change light off and timer is active (blinking phase) - make light fixed on and stop timer
-        if (!isFlashLightOn && isTimerRunning) {
-            switchFlashLight()
-            stopTimer()
-        }
-        //if seekbar value not min - if light on - turn off and start blink
-        val repetitionValue = (seekBar.progress.toLong() + 1 ) * 1000
-        if (repetitionValue > 1000) {
-            if(isFlashLightOn){
-                 switchFlashLight()
+
+        //when button is active, reset timer for blink speed change or stop timer and turn on light
+        val repetitionValue = (seekBar.progress.toLong() + 1 )
+        if (isButtonActive) {
+            if(repetitionValue > 1){
                 startTimer()
+            } else {
+                stopTimer()
+                ledon()
             }
         }
     }
 
     fun onFlashLightClicked() {
+
+        val repetitionValue = (seekBar.progress.toLong() + 1 )
+
         Log.i("flashLight", "FlashLight clicked")
 
-        //if light off and timer running pre-invert light status (trick)
-        if (!isFlashLightOn && isTimerRunning) {
-            isFlashLightOn = !isFlashLightOn
-        }
-        // First invert the state of the flashLight
-        switchFlashLight()
-
-        val repetitionValue = (seekBar.progress.toLong() + 1 ) * 1000
-
-        // Then start (or stop) the timer
-        if (isFlashLightOn && repetitionValue > 1000){
-            startTimer()
-        } else {
+        //if button is active - stop and turn off
+        if (isButtonActive) {
             stopTimer()
+            ledoff()
+            onOffButton.setImageResource(R.drawable.power_off)
+
+        //if button is inactive - turn on and start timer if blink is needed
+        } else {
+            ledon()
+            onOffButton.setImageResource(R.drawable.power_on)
+            if(repetitionValue > 1) {
+                startTimer()
+            }
         }
-
-        // TODO: When a timer is running
-        //  if i press the button while flashlight is on, it will turn off (correct)
-        //  but if i press it while it's off, it will turn it on and restart the timer (wrong)
-        // Solution 1: have a second bool for the status of the button not touched by the timer
-        // Solution 2: decouple button for starting flashlight from the image
-
+        isButtonActive = !isButtonActive
     }
 
-    private fun switchFlashLight(){
+    //turn led on and record status
+    private fun ledon(){
 
         val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
         val cameraId = cameraManager.cameraIdList[0]
 
-        isFlashLightOn = !isFlashLightOn
-        Log.i("flashLight", "Light is $isFlashLightOn")
-        // After inverting the value, we then execute our logic
-        // In this case, we change source of the image
-        // and the torch status
+        Log.i("flashLight", "SHOW power ON")
+        cameraManager.setTorchMode(cameraId, true)
+        isFlashLightOn = true
 
-        //TODO: consider if toggling visibility of two images
-        // might be better than setImgeResource every time
-        if(isFlashLightOn){
-            Log.i("flashLight", "SHOW power ON")
-            onOffButton.setImageResource(R.drawable.power_on)
-            cameraManager.setTorchMode(cameraId, true)
-        }
-        else{
-            Log.i("flashLight", "SHOW power off")
-            onOffButton.setImageResource(R.drawable.power_off)
-            cameraManager.setTorchMode(cameraId, false)
+    }
+
+    //turn led off and record status
+    private fun ledoff(){
+
+        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val cameraId = cameraManager.cameraIdList[0]
+
+        Log.i("flashLight", "SHOW power off")
+        cameraManager.setTorchMode(cameraId, false)
+        isFlashLightOn = false
+
+    }
+
+    //invert hardware led status
+    private fun switchFlashLight() {
+        if(isFlashLightOn) {
+            ledoff()
+        } else {
+            ledon()
         }
     }
 
@@ -145,7 +135,6 @@ class MainActivity : AppCompatActivity() {
 
         if(isTimerRunning){
             // Remember to cancel the previous timer if we start timer without stopping
-
             Log.i("flashLight", "timer was running. cancel")
             stopTimer()
         }
@@ -161,14 +150,7 @@ class MainActivity : AppCompatActivity() {
 
         timerHandle.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                // Remover counter's if when finished debugging
-                //if(counter == 10){
-                //    stopTimer()
-                //} else {
-                    Log.i("flashLight", "scheduled task PING $counter")
                     switchFlashLight()
-                //    counter++
-               // }
             }
         }, repetitionValue, repetitionValue)
         // first repetitionValue is the delay after which to run the callback
@@ -177,62 +159,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun stopTimer(){
-        Log.i("flashLight", "stopTimer")
 
+        Log.i("flashLight", "stopTimer")
         if(isTimerRunning){
             // Cancel and reset the handle + set bool to false
             timerHandle.cancel()
             isTimerRunning = false
             timerHandle = Timer()
-            counter = 0
-        }
-    }
-
-    // TODO: remove
-    // OLD CODE
-    //aggiunta
-    private fun openFlashLight() {
-
-        //val on_off = findViewById<Button>(R.id.on_off)
-        val onOffButton = findViewById<ImageButton>(R.id.on_off_button)
-
-        val seekBar = findViewById<SeekBar>(R.id.seekBar)
-
-
-        onOffButton.setOnClickListener {
-            a = !a
-            blinkingled(seekBar.progress.toLong())
-            onOffButton.setImageResource(R.drawable.power_on)
         }
     }
 
 
-
-    fun blinkingled(progress: Long) {
-        val cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        val cameraId = cameraManager.cameraIdList[0]
-        val t1 = Thread(
-            kotlinx.coroutines.Runnable {
-                while (a) {
-                    cameraManager.setTorchMode(cameraId, true)
-                    flashLightStatus = true
-                    if (progress > 0) {
-                    Thread.sleep(progress*500)
-                    cameraManager.setTorchMode(cameraId, false)
-                    flashLightStatus = false
-                    Thread.sleep(progress*500)
-                    }
-
-                }
-                cameraManager.setTorchMode(cameraId, false)
-                flashLightStatus = false
-                val on_off = findViewById<ImageButton>(R.id.on_off_button)
-
-                on_off.setImageResource(R.drawable.power_off)
-
-            }
-        )
-        t1.start()
-    }
 
 }
